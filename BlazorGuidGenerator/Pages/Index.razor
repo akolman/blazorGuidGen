@@ -1,0 +1,48 @@
+﻿@page "/"
+@inject Program.ClipboardService ClipboardService
+
+<h1>Generate Number of GUIDs</h1>
+
+<input @bind="idsToGet" type="text" />
+<button class="btn-primary" value="Generate" @onclick="GenerateGuids">Generate</button>
+<table>
+    <tbody>
+        @foreach (var id in ids)
+        {
+            <tr>
+                <td><input class="guid-val" onclick="this.select();" type="text" value="@id" readonly size="37"></td>
+                <td><button class="btn-primary content" @onclick="() => CopyToClipboard(id)">Copy</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private int idsToGet = 5;
+    private List<string> ids = new List<string>();
+
+    async Task CopyToClipboard(string id)
+    {
+        // Writing to the clipboard may be denied, so you must handle the exception
+        try
+        {
+            await ClipboardService.WriteTextAsync(id);
+        }
+        catch
+        {
+            Console.WriteLine("Cannot write text to clipboard");
+        }
+    }
+
+    
+
+    public async void GenerateGuids()
+    {
+        ids.Clear();
+        for (var i = 0; i < idsToGet; i++)
+        {
+            ids.Add(Guid.NewGuid().ToString());
+        }
+    }
+}
+
