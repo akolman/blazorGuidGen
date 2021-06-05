@@ -1,0 +1,17 @@
++ new
+* changed
+- removed
+
+--------------------------------------------------------------------------------
+BlazorGUIDgen 1.2.0 - 2021-06-05
++Added new hex conversion page -- bugs likely
++Added emoji support for UTF-8 conversion of hex
+
+--------------------------------------------------------------------------------
+BlazorGUIDgen 1.1.0 - 2021-06-03
+*Updated target runtime to .net6 preview 4
+
+--------------------------------------------------------------------------------
+BlazorGUIDgen 1.0.0 - 2020-11-24
+
++Initial version

@@ -8,6 +8,15 @@ html, body {
     font-family: Courier;
 }
 
+@font-face {
+    font-family: 'OpenMoji';
+    src: URL('OpenMoji-Color.SVG.ttf') format('truetype');
+}
+
+.main-col {
+    display: inline-block;
+    width: 50%;
+}
 
 a, .btn-link {
     color: #0366d6;
