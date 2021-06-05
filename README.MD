@@ -12,6 +12,8 @@ It's really nothing special, but it is at least easy to use and quick
 - GUIDs are generated in browser so no server-side lookup/ajax calls
 - Allows you to pick number of GUIDs to generate
 - Button that copies GUID directly to clipboard
+- Now features Hex converter!!!
+
 ## Building
 Target the latest .net6 preview and run:
 `dotnet build`

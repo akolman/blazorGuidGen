@@ -1,0 +1,111 @@
+﻿<div class="form-group">
+	<label for="y">@Label</label>
+	<div class="input-group">
+		<div class="input-group-prepend">
+			<span class="input-group-text">
+				<sub>@TypeLabel</sub>
+			</span>
+		</div>
+		@if(Locked)
+		{
+			<textarea style="@Style" id="y" @bind="DisplayValue" class="form-control" readonly/>
+		}
+		else
+		{
+			<textarea style="@Style" id="y"  @bind="InputValue" @bind:event="oninput" />
+		}
+		<div class="input-group-append">
+			<span class="input-group-text">
+				<sub>@BaseLabel</sub>
+			</span>
+		</div>
+	</div>
+</div>
+
+@code {
+	protected override void OnInitialized()
+	{
+		if(!String.IsNullOrWhiteSpace(StartValue))
+		{
+			_value = StartValue;
+		}
+		else
+		{
+			_value = String.Empty;
+		}
+	}
+
+	[Parameter]
+	public string Style { get; set; } = String.Empty;
+
+	[Parameter]
+	public string StartValue { get; set; } = String.Empty;
+
+	[Parameter]
+	public string TypeLabel { get; set; } = String.Empty;
+
+	[Parameter]
+	public string BaseLabel { get; set; } = String.Empty;
+
+	[Parameter]
+	public string Label { get; set; } = String.Empty;
+
+	[Parameter]
+	public Func<string, bool>? ValidateCallback { get; set; }
+
+	[Parameter]
+	public Func<string, string>? FormatCallback { get; set; }
+
+	[Parameter]
+	public Action<string>? ChangedCallback { get; set; }
+
+	[Parameter]
+	public bool Locked { get; set; } = true;
+
+	[Parameter]
+	public string DisplayValue { get; set; } = String.Empty;
+
+	private string? _value;
+
+	[Parameter]
+	public string InputValue
+	{
+		get
+		{
+			return _value ?? String.Empty;
+		}
+		set
+		{
+			if(Locked)
+			{
+				_value = value;
+			}
+			else
+			{
+				if(ValidateCallback != null)
+				{
+					if (ValidateCallback.Invoke(value))
+					{
+						if(FormatCallback != null)
+						{
+							_value = FormatCallback(value);
+						}
+						else
+						{
+							_value = value;
+						}
+					}					
+				}
+				else
+				{
+					_value = value;
+				}
+				if(ChangedCallback != null)
+				{
+					ChangedCallback.Invoke(_value ?? String.Empty);
+				}				
+			}
+			this.StateHasChanged();
+		}
+	}
+}

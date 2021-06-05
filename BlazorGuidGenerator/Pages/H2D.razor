@@ -1,0 +1,163 @@
+﻿@page "/h2d"
+
+<h1>Convert Hex&lt;-&gt;Decimal</h1>
+
+<div class="main-col">
+	<button @onclick="FlipState">@StateLabel</button>
+
+	@if (CurrentState == State.HexToDecimal)
+	{
+		<LabeledEntry Label="Hexadecimal Input" TypeLabel="byte[]" Locked="false" BaseLabel="16" StartValue="@hexVal" ValidateCallback="@IsHex" FormatCallback="@FormatHex" ChangedCallback="HandleEntry" />
+		<LabeledEntry Label="Unsigned Int (32-bit)" TypeLabel="uint" DisplayValue="@u32val" StartValue="@u32val" Locked="true" BaseLabel="10" />
+	}
+	else
+	{
+		<LabeledEntry Label="Unsigned Int Input" TypeLabel="uint" StartValue="@u32val" Locked="false" BaseLabel="10" ValidateCallback="@IsNum" ChangedCallback="HandleEntry"/>
+		<LabeledEntry Label="Hexadecimal" DisplayValue="@hexVal" TypeLabel="byte[]" StartValue="@hexVal" Locked="true" BaseLabel="16" />
+	}
+	 <LabeledEntry Label="Signed Int (32-bit)" TypeLabel="int" DisplayValue="@i32val" Locked="true" BaseLabel="10" />
+	 <LabeledEntry Label="Unsigned Long (64-bit)" TypeLabel="ulong" DisplayValue="@u64val" Locked="true" BaseLabel="10" />
+	 <LabeledEntry Label="UTF-8" TypeLabel="char" DisplayValue="@utf8val" Locked="true" BaseLabel="" />
+	 <LabeledEntry Label="UTF-16 BigEndian" TypeLabel="wchar" DisplayValue="@utf16bval" Locked="true" BaseLabel="" />
+	 <LabeledEntry Label="UTF-16 LittleEndian" TypeLabel="wchar" DisplayValue="@utf16lval" Locked="true" BaseLabel="" />
+</div>
+
+@code {
+	private enum State
+	{
+		HexToDecimal = 1,
+		DecimalToHex = 2
+	}
+
+	private State CurrentState = State.HexToDecimal;
+	private string StateLabel => CurrentState == State.HexToDecimal ? "Hex->Decimal" : "Decimal->Hex";
+
+	const string HEX_CHARS = "abcdefABCDEF0123456789";
+	const string NUM_CHARS = "0123456789";
+
+	private string hexVal = String.Empty;
+	private string u32val = String.Empty;
+	private string i32val = String.Empty;
+	private string u64val = String.Empty;
+	private string utf8val = String.Empty;
+	private string utf16bval = String.Empty;
+	private string utf16lval = String.Empty;
+
+	private bool IsHex(string str)
+	{
+		foreach (var ch in str)
+		{
+			if (!HEX_CHARS.Contains(ch)) return false;
+		}
+		return true;
+	}
+
+	private bool IsNum(string str)
+	{
+		foreach (var ch in str)
+		{
+			if (!NUM_CHARS.Contains(ch)) return false;
+		}
+		return true;		
+	}
+
+	private string FormatHex(string str) => str.ToUpper();
+
+	private void HandleEntry(string str)
+	{
+		if (String.IsNullOrWhiteSpace(str))
+		{
+			hexVal = String.Empty;
+			u32val = String.Empty;
+			i32val = String.Empty;
+			u64val = String.Empty;
+			utf8val = String.Empty;
+			this.StateHasChanged();
+			return;
+		}
+
+		if (CurrentState == State.HexToDecimal)
+		{
+			HandleHexInput(str);
+		}
+		else
+		{
+			HandleIntInput(str);
+			str = hexVal;
+		}
+
+		try
+		{
+			i32val = Int32.Parse(str, System.Globalization.NumberStyles.HexNumber).ToString();
+		}
+		catch (Exception e)
+		{
+			_ = e;
+			i32val = "OVERFLOW";
+		}
+
+		try
+		{
+			u64val = UInt64.Parse(str, System.Globalization.NumberStyles.HexNumber).ToString();
+		}
+		catch (Exception e)
+		{
+			_ = e;
+			u64val = "OVERFLOW";
+		}
+
+		if (str.Length % 2 == 0)
+		{
+			var h2b = StringToByteArrayFastest(str);
+			utf8val = System.Text.Encoding.UTF8.GetString(h2b);
+			utf16bval = System.Text.Encoding.BigEndianUnicode.GetString(h2b);
+			utf16lval = System.Text.Encoding.Unicode.GetString(h2b);
+		}
+
+		this.StateHasChanged();
+	}
+
+	private void HandleIntInput(string full)
+	{
+		hexVal = UInt32.Parse(full).ToString("X");
+		u32val = full;
+	}
+
+	private void HandleHexInput(string full)
+	{
+		try
+		{
+			u32val = UInt32.Parse(full, System.Globalization.NumberStyles.HexNumber).ToString();
+		}
+		catch (Exception e)
+		{
+			_ = e;
+			u32val = "OVERFLOW";
+		}
+		hexVal = full;
+	}
+
+	private static byte[] StringToByteArrayFastest(string hex)
+	{
+		if (hex.Length % 2 == 1)
+			throw new Exception("The binary key cannot have an odd number of digits");
+
+		byte[] arr = new byte[hex.Length >> 1];
+		for (int i = 0; i < hex.Length >> 1; ++i)
+		{
+			arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + (GetHexVal(hex[(i << 1) + 1])));
+		}
+		return arr;
+	}
+
+	private static int GetHexVal(char hex)
+	{
+		int val = (int)hex;
+		return val - (val < 58 ? 48 : (val < 97 ? 55 : 87));
+	}
+
+	private void FlipState()
+	{
+		CurrentState = (CurrentState == State.HexToDecimal) ? State.DecimalToHex : State.HexToDecimal;
+	}
+}
