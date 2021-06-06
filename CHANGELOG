@@ -3,6 +3,12 @@
 - removed
 
 --------------------------------------------------------------------------------
+BlazorGUIDgen 1.2.1 - 2021-06-05
++Added UTF-32 BE and LE support
++Support for U+ Unicode value entry
+*UI fixes and improvements
+
+--------------------------------------------------------------------------------
 BlazorGUIDgen 1.2.0 - 2021-06-05
 +Added new hex conversion page -- bugs likely
 +Added emoji support for UTF-8 conversion of hex

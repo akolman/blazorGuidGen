@@ -13,6 +13,8 @@ It's really nothing special, but it is at least easy to use and quick
 - Allows you to pick number of GUIDs to generate
 - Button that copies GUID directly to clipboard
 - Now features Hex converter!!!
+- Converts "U+" style Unicode codepoints to their emoji
+
 
 ## Building
 Target the latest .net6 preview and run:
