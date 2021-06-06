@@ -1,11 +1,14 @@
 ﻿<div class="form-group">
 	<label for="y">@Label</label>
 	<div class="input-group">
-		<div class="input-group-prepend">
-			<span class="input-group-text">
-				<sub>@TypeLabel</sub>
-			</span>
-		</div>
+		@if(!String.IsNullOrWhiteSpace(TypeLabel))
+		{
+			<div class="input-group-prepend">
+				<span class="input-group-text">
+					<sub>@TypeLabel</sub>
+				</span>
+			</div>			
+		}
 		@if(Locked)
 		{
 			<textarea rows="@Rows" style="@Style" id="y" @bind="DisplayValue" class="form-control" readonly/>
@@ -15,9 +18,12 @@
 			<textarea rows="@Rows" style="@Style" id="y"  @bind="InputValue" @bind:event="oninput" />
 		}
 		<div class="input-group-append">
-			<span class="input-group-text">
-				<sub>@BaseLabel</sub>
-			</span>
+			@if(!String.IsNullOrWhiteSpace(BaseLabel))
+			{
+				<span class="input-group-text">
+					<sub>@BaseLabel</sub>
+				</span>				
+			}
 		</div>
 	</div>
 </div>
