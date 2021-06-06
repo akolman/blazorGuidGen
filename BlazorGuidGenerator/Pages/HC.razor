@@ -7,12 +7,12 @@
 
 	@if (CurrentState == State.HexToDecimal)
 	{
-		<LabeledEntry Label="Hexadecimal Input" TypeLabel="byte[]" Locked="false" BaseLabel="16" StartValue="@hexVal" ValidateCallback="@IsHex" FormatCallback="@FormatHex" ChangedCallback="HandleEntry" />
+		<LabeledEntry Rows="2" Label="Hexadecimal Input" TypeLabel="byte[]" Locked="false" BaseLabel="16" StartValue="@hexVal" ValidateCallback="@IsHex" FormatCallback="@FormatHex" ChangedCallback="HandleEntry" />
 		<LabeledEntry Label="Unsigned Int (32-bit)" TypeLabel="uint" DisplayValue="@u32val" StartValue="@u32val" Locked="true" BaseLabel="10" />
 	}
 	else
 	{
-		<LabeledEntry Label="Unsigned Int Input" TypeLabel="uint" StartValue="@u32val" Locked="false" BaseLabel="10" ValidateCallback="@IsNum" ChangedCallback="HandleEntry"/>
+		<LabeledEntry Rows="2" Label="Unsigned Int Input" TypeLabel="uint" StartValue="@u32val" Locked="false" BaseLabel="10" ValidateCallback="@IsNum" ChangedCallback="HandleEntry"/>
 		<LabeledEntry Label="Hexadecimal" DisplayValue="@hexVal" TypeLabel="byte[]" StartValue="@hexVal" Locked="true" BaseLabel="16" />
 	}
 	 <LabeledEntry Label="Signed Int (32-bit)" TypeLabel="int" DisplayValue="@i32val" Locked="true" BaseLabel="10" />

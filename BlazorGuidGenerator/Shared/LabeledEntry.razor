@@ -8,11 +8,11 @@
 		</div>
 		@if(Locked)
 		{
-			<textarea style="@Style" id="y" @bind="DisplayValue" class="form-control" readonly/>
+			<textarea rows="@Rows" style="@Style" id="y" @bind="DisplayValue" class="form-control" readonly/>
 		}
 		else
 		{
-			<textarea style="@Style" id="y"  @bind="InputValue" @bind:event="oninput" />
+			<textarea rows="@Rows" style="@Style" id="y"  @bind="InputValue" @bind:event="oninput" />
 		}
 		<div class="input-group-append">
 			<span class="input-group-text">
@@ -34,6 +34,9 @@
 			_value = String.Empty;
 		}
 	}
+
+	[Parameter]
+	public int Rows { get; set; } = 1;
 
 	[Parameter]
 	public string Style { get; set; } = String.Empty;
