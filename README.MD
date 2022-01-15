@@ -15,6 +15,10 @@ It's really nothing special, but it is at least easy to use and quick
 - Now features Hex converter!!!
 - Converts "U+" style Unicode codepoints to their emoji
 
+## Updates
+### 1.3.1
+- Updated to final release of net6
+- GUID Copy button now flips to 'Copied'
 
 ## Building
 Target the latest .net6 preview and run:
