@@ -7,19 +7,29 @@
 <button class="btn-primary" value="Generate" @onclick="GenerateGuids">Generate</button>
 <table>
     <tbody>
-        @foreach (var id in ids)
+        @foreach (var id in IdIsCopied)
         {
             <tr>
-                <td><input class="guid-val" onclick="this.select();" type="text" value="@id" readonly size="37"></td>
-                <td><button class="btn-primary content" @onclick="() => CopyToClipboard(id)">Copy</button></td>
+                <td><input class="guid-val" onclick="this.select();" @onkeydown="(args)=> InputOnKeyDown(args, id.Key)" type="text" value="@id.Key" readonly size="37"></td>
+                <td>
+                    @if(id.Value)
+                    {
+                        <button class="btn-primary content" @onclick="() => CopyToClipboard(id.Key)">Copied</button>
+                    }
+                    else
+                    {
+                        <button class="btn-primary content" @onclick="() => CopyToClipboard(id.Key)">Copy</button>
+                    }
+                </td>  
             </tr>
         }
     </tbody>
 </table>
 
 @code {
+
     private int idsToGet = 5;
-    private List<string> ids = new List<string>();
+    private Dictionary<string, bool> IdIsCopied = new Dictionary<string, bool>();
 
     async Task CopyToClipboard(string id)
     {
@@ -32,14 +42,29 @@
         {
             Console.WriteLine("Cannot write text to clipboard");
         }
+
+        SetIdCopied(id);
+    }
+
+    void InputOnKeyDown(KeyboardEventArgs args, string key)
+    { 
+        if(args.CtrlKey && args.Key == "c")
+        {
+            SetIdCopied(key);
+        }
+    }
+
+    void SetIdCopied(string id)
+    {
+        IdIsCopied[id] = true;
     }
 
     public void GenerateGuids()
     {
-        ids.Clear();
+        IdIsCopied.Clear();
         for (var i = 0; i < idsToGet; i++)
         {
-            ids.Add(Guid.NewGuid().ToString());
+            IdIsCopied.Add(Guid.NewGuid().ToString(), false);
         }
     }
 }

@@ -121,10 +121,7 @@
 			utf16bval = System.Text.Encoding.BigEndianUnicode.GetString(h2b);
 			utf16lval = System.Text.Encoding.Unicode.GetString(h2b);
 			var utf32ldecoder = new System.Text.UTF32Encoding(false, true);
-			
-			
 			utf32lval = utf32ldecoder.GetString(h2b);
-
 		}
 
 		/*Special case for LE UTF-32 so that unicode points can also be input.
@@ -142,11 +139,8 @@
 			}
 		}
 
-
-		var utf32bdecoder = new System.Text.UTF32Encoding(true, true);
-			
+		var utf32bdecoder = new System.Text.UTF32Encoding(true, true);	
 		utf32bval = utf32bdecoder.GetString(StringToByteArrayFastest(temputf32bval));
-
 
 		this.StateHasChanged();
 	}
