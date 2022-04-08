@@ -1,0 +1,152 @@
+﻿@page "/SG"
+@inject Program.ClipboardService ClipboardService
+
+<h1>Generate Number of Sequences by Pattern</h1>
+<b>For pattern help see <a href="https://gitlab.com/Akolman/seqeasy/-/tree/master/Seqeasy.StringPattern">Seqeasy.StringPattern</a></b>
+<div>
+    <div>
+        Number to Generate:
+        <input @bind="SeqsToGen" type="text" placeholder="Number to generate" />
+    </div>
+    <div>
+        Pattern:
+        <input @bind="Pattern" type="text" />
+    </div>
+    
+    <select @bind="CharsetChoice">
+        <option value="1">All Characters with Symbols</option>
+        <option value="2">All Characters without Symbols</option>
+        <option value="3">All Non-Ambiguous Characters without Symbols</option>
+        <option value="10">Binary</option>
+        <option value="16">Hexadecimal</option>
+    </select>
+</div>
+<div>
+    Deduplicate
+    <input type="checkbox" @bind="Deduplicate"/>
+</div>
+
+<button class="btn-primary" value="Generate" @onclick="GenerateSeqs">Generate</button>
+<p style="color:red" hidden="@string.IsNullOrWhiteSpace(ErrorText)">
+    @ErrorText
+</p>
+
+<table>
+    <tbody>
+       @{
+           var idx = 0;
+       }
+        @foreach (var seq in Seqs)
+        {
+            <tr>
+                <td><input class="guid-val" onclick="this.select();" @onkeydown="(args)=> InputOnKeyDown(args, seq.Value)" type="text" value="@seq.Value" readonly size="@SeqSize"></td>
+                <td style="font-size:x-small">@idx@{idx++;}</td>
+                <td>
+                    @if(seq.Copied)
+                    {
+                        <button class="btn-primary content" @onclick="() => CopyToClipboard(seq.Value)">Copied</button>
+                    }
+                    else
+                    {
+                        <button class="btn-primary content" @onclick="() => CopyToClipboard(seq.Value)">Copy</button>
+                    }
+                </td>  
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    public class SeqItem
+    {
+        public SeqItem(string value)
+        {
+            Value = value;
+        }
+
+        public string Value { get; set; } = string.Empty;
+
+        public bool Copied { get; set; } = false;
+    }
+
+    public bool Deduplicate = true;
+    public string CharsetChoice = "1";
+    public string ErrorText = string.Empty;
+    public string Pattern = String.Empty;
+    public int SeqsToGen = 1;
+    public int SeqSize = 10;
+    public List<SeqItem> Seqs = new List<SeqItem>();
+
+    void InputOnKeyDown(KeyboardEventArgs args, string key)
+    { 
+        if(args.CtrlKey && args.Key == "c")
+        {
+            SetIdCopied(key);
+        }
+    }
+
+    async Task CopyToClipboard(string id)
+    {
+        // Writing to the clipboard may be denied, so you must handle the exception
+        try
+        {
+            await ClipboardService.WriteTextAsync(id);
+        }
+        catch
+        {
+            Console.WriteLine("Cannot write text to clipboard");
+        }
+
+        SetIdCopied(id);
+    }
+
+    void SetIdCopied(string id)
+    {
+        Seqs.Single(s => s.Value.Equals(id)).Copied = true;
+    }
+
+    private Seqeasy.StringPattern.StringPattern GetSPFromCharsetChoice()
+    {
+        switch (CharsetChoice)
+        {
+            case "1" :
+                return Seqeasy.StringPattern.StringPattern.Parse<Seqeasy.CharacterSets.CaseSensitive.AlphaNumFullSymbols>(Pattern);
+
+            case "2" :
+                return Seqeasy.StringPattern.StringPattern.Parse<Seqeasy.CharacterSets.CaseSensitive.AlphaNumFull>(Pattern);
+            case "10":
+                return Seqeasy.StringPattern.StringPattern.Parse<Seqeasy.CharacterSets.Special.BinaryCharSet>(Pattern);
+            case "16":
+                return Seqeasy.StringPattern.StringPattern.Parse<Seqeasy.CharacterSets.Special.HexCharSet>(Pattern);
+            default :
+                return Seqeasy.StringPattern.StringPattern.Parse<Seqeasy.CharacterSets.CaseSensitive.AlphaNumNoAmbigLetters>(Pattern);
+        }
+    }
+
+    public void GenerateSeqs()
+    {
+        Seqs.Clear();
+
+        try
+        {
+            var gen = SequenceGenerator.Build(GetSPFromCharsetChoice());
+
+            var opts = BatchGenerationOptions.None;
+            if(Deduplicate)
+            {
+                opts |= BatchGenerationOptions.Deduplicate;
+            }
+
+            foreach(var seq in gen.GetEnumerator(SeqsToGen, opts))
+            {
+                Seqs.Add(new SeqItem(seq));
+            }
+
+            ErrorText = string.Empty;
+        }
+        catch(Exception e)
+        {
+            ErrorText = e.Message;
+        }
+	}
+}
