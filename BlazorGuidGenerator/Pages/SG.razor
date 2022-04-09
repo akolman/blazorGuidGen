@@ -10,10 +10,12 @@
     </div>
     <div>
         Pattern:
-        <input @bind="Pattern" type="text" />
+        <input @oninput="PatternChanged" type="text" />
+        Width / Combinations:
+        @statLabel;
     </div>
     
-    <select @bind="CharsetChoice">
+    <select @onchange="CharsetChanged">
         <option value="1">All Characters with Symbols</option>
         <option value="2">All Characters without Symbols</option>
         <option value="3">All Non-Ambiguous Characters without Symbols</option>
@@ -24,13 +26,17 @@
 <div>
     Deduplicate
     <input type="checkbox" @bind="Deduplicate"/>
+    Crypto-secure RNG
+    <input type="checkbox" @bind="UseCSRNG"/>
 </div>
 
 <button class="btn-primary" value="Generate" @onclick="GenerateSeqs">Generate</button>
 <p style="color:red" hidden="@string.IsNullOrWhiteSpace(ErrorText)">
     @ErrorText
 </p>
-
+<p style="color:red" hidden="@string.IsNullOrWhiteSpace(WarningText)">
+    @WarningText
+</p>
 <table>
     <tbody>
        @{
@@ -39,7 +45,7 @@
         @foreach (var seq in Seqs)
         {
             <tr>
-                <td><input class="guid-val" onclick="this.select();" @onkeydown="(args)=> InputOnKeyDown(args, seq.Value)" type="text" value="@seq.Value" readonly size="@SeqSize"></td>
+                <td><input class="guid-val" onclick="this.select();" @onkeydown="(args)=> InputOnKeyDown(args, seq.Value)" type="text" value="@seq.Value" readonly size="@InputWidth"></td>
                 <td style="font-size:x-small">@idx@{idx++;}</td>
                 <td>
                     @if(seq.Copied)
@@ -70,11 +76,14 @@
     }
 
     public bool Deduplicate = true;
+    public bool UseCSRNG = false;
     public string CharsetChoice = "1";
     public string ErrorText = string.Empty;
+    public string WarningText = string.Empty;
     public string Pattern = String.Empty;
+    public int InputWidth = 10;
     public int SeqsToGen = 1;
-    public int SeqSize = 10;
+    public string statLabel = "0/0";
     public List<SeqItem> Seqs = new List<SeqItem>();
 
     void InputOnKeyDown(KeyboardEventArgs args, string key)
@@ -100,6 +109,62 @@
         SetIdCopied(id);
     }
 
+    void CharsetChanged(ChangeEventArgs e)
+    {
+        CharsetChoice = e!.Value!.ToString()!;
+        UpdateStats();
+    }
+
+    void PatternChanged(ChangeEventArgs e)
+    {
+        Pattern = e!.Value!.ToString()!;
+
+        try
+        {
+            UpdateStats(); 
+        }
+        catch(Exception)
+        {
+            
+        }
+    }
+
+    void UpdateStats()
+    {
+        var stringPat = GetSPFromCharsetChoice();
+
+        if(stringPat.Combinations < 1_000_000_000_000_000)
+        {
+            statLabel = $"{stringPat.Width} / {stringPat.Combinations}";
+            WarningText = string.Empty;
+        }
+        else
+        {
+            var bneeded = stringPat.Combinations.GetByteCount();
+            var combs = string.Format("{0:#.##E+0}", stringPat.Combinations);
+            if (bneeded < 5000)
+            {
+                WarningText = string.Empty;
+            }
+            else if(bneeded >= 5000 && bneeded <= 15000)
+            {
+                WarningText = $"Watch it!  That's {combs} combinations and I'm having trouble with that number.";
+            }
+            else if(bneeded > 15000 && bneeded < 40000)
+            {
+                WarningText = $"CAREFUL!  That's {combs} COMBOS now and I'm having trouble with that number.";
+            }
+            else
+            {
+                WarningText = $"WHAT ARE YOU DOING!?!?  That's {combs} COMBOS!!!!!";
+            }
+
+            statLabel = $"{stringPat.Width} / {combs}"; 
+        }
+
+        this.StateHasChanged();
+    }
+
     void SetIdCopied(string id)
     {
         Seqs.Single(s => s.Value.Equals(id)).Copied = true;
@@ -111,7 +176,6 @@
         {
             case "1" :
                 return Seqeasy.StringPattern.StringPattern.Parse<Seqeasy.CharacterSets.CaseSensitive.AlphaNumFullSymbols>(Pattern);
-
             case "2" :
                 return Seqeasy.StringPattern.StringPattern.Parse<Seqeasy.CharacterSets.CaseSensitive.AlphaNumFull>(Pattern);
             case "10":
@@ -127,17 +191,33 @@
     {
         Seqs.Clear();
 
+        var genopts = GeneratorOptions.Defaults;
+        if (UseCSRNG)
+        {
+            genopts.RandomizerLevel = RandomizerLevel.Secure;
+        }
+
+        var batchOpts = BatchGenerationOptions.None;
+
+        if(Deduplicate)
+        {
+            batchOpts |= BatchGenerationOptions.Deduplicate;
+        }
+
         try
         {
-            var gen = SequenceGenerator.Build(GetSPFromCharsetChoice());
+            using var gen = SequenceGenerator.Build(GetSPFromCharsetChoice());
 
-            var opts = BatchGenerationOptions.None;
-            if(Deduplicate)
+            if (gen.Width < 40)
             {
-                opts |= BatchGenerationOptions.Deduplicate;
+                InputWidth = gen.Width + 2;
+            }
+            else
+            {
+                InputWidth = 40 + 3;
             }
 
-            foreach(var seq in gen.GetEnumerator(SeqsToGen, opts))
+            foreach(var seq in gen.GetEnumerator(SeqsToGen, batchOpts))
             {
                 Seqs.Add(new SeqItem(seq));
             }
