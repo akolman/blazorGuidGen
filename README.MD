@@ -16,6 +16,13 @@ It's really nothing special, but it is at least easy to use and quick
 - Converts "U+" style Unicode codepoints to their emoji
 
 ## Updates
+### 1.5.1
+- Updated to net 8.0.
+- Enabled AOT.
+
+### 1.4.1
+- Added sequence generator.
+
 ### 1.3.1
 - Updated to final release of net6
 - GUID Copy button now flips to 'Copied'
