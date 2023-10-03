@@ -1,6 +1,5 @@
-using System;
-using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
@@ -9,18 +8,11 @@ namespace BlazorGuidGenerator
 {
     public class Program
     {
-        public sealed class ClipboardService
+        public sealed class ClipboardService(IJSRuntime jsRuntime)
         {
-            private readonly IJSRuntime _jsRuntime;
-
-            public ClipboardService(IJSRuntime jsRuntime)
-            {
-                _jsRuntime = jsRuntime;
-            }
-
             public ValueTask WriteTextAsync(string text)
             {
-                return _jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+                return jsRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
             }
         }
 
@@ -28,6 +20,7 @@ namespace BlazorGuidGenerator
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
+            builder.RootComponents.Add<HeadOutlet>("head::after");
 
             builder.Services.AddScoped<ClipboardService>();
 

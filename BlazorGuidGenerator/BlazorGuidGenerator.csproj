@@ -3,23 +3,33 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
 	<LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Authors>Andrew Kolman</Authors>
     <Company />
     <Product>Blazor GUID Generator</Product>
     <Description>Client-side (wasm) batch GUID generator</Description>
     <PackageProjectUrl>https://guid.akolman.info</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/Akolman/blazorGUIDgen</RepositoryUrl>
-    <Nullable>enable</Nullable>
-    <AssemblyVersion>1.4.1.270</AssemblyVersion>
-    <FileVersion>1.4.1.270</FileVersion>
-    <Version>1.4.1</Version>
+    <AssemblyVersion>1.5.1.600</AssemblyVersion>
+    <FileVersion>1.5.1.600</FileVersion>
+    <Version>1.5.1</Version>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="BlazorWasmAntivirusProtection" Version="1.6.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.3" PrivateAssets="all" />
-    <PackageReference Include="Seqeasy.StringPattern" Version="0.0.1.1" />
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <RunAOTCompilation>True</RunAOTCompilation>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <RunAOTCompilation>True</RunAOTCompilation>
+    </PropertyGroup>
+
+
+	<ItemGroup>
+    <PackageReference Include="BlazorWasmAntivirusProtection" Version="2.4.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0-rc.1.23421.29" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0-rc.1.23421.29" PrivateAssets="all" />
+    <PackageReference Include="Seqeasy.StringPattern" Version="0.0.1.4" />
   </ItemGroup>
 
 </Project>

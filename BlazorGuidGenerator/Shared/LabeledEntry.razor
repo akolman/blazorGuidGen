@@ -29,6 +29,7 @@
 </div>
 
 @code {
+#pragma warning disable BL0007
 	protected override void OnInitialized()
 	{
 		if(!String.IsNullOrWhiteSpace(StartValue))
@@ -74,8 +75,6 @@
 	[Parameter]
 	public string DisplayValue { get; set; } = String.Empty;
 
-	private string? _value;
-
 	[Parameter]
 	public string InputValue
 	{
@@ -117,4 +116,6 @@
 			this.StateHasChanged();
 		}
 	}
+
+	private string? _value;
 }

@@ -5,7 +5,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>BlazorGuidGenerator</ActiveDebugProfile>
-    <NameOfLastUsedPublishProfile>C:\Users\akolman\source\repos\blazorGUIDgen\BlazorGuidGenerator\Properties\PublishProfiles\FolderProfile.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>C:\Users\akolman\source\blazorGUIDgen\BlazorGuidGenerator\Properties\PublishProfiles\guidsite.pubxml</NameOfLastUsedPublishProfile>
     <RazorPage_SelectedScaffolderID>RazorPageScaffolder</RazorPage_SelectedScaffolderID>
     <RazorPage_SelectedScaffolderCategoryPath>root/Common/RazorPage</RazorPage_SelectedScaffolderCategoryPath>
   </PropertyGroup>
