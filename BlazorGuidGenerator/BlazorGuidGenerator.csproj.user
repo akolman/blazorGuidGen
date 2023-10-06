@@ -5,7 +5,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>BlazorGuidGenerator</ActiveDebugProfile>
-    <NameOfLastUsedPublishProfile>C:\Users\akolman\Source\blazorGuidGen\.github\workflows\azure-static-web-apps-black-plant-0ce7f2910.yml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>C:\Users\akolman\source\blazorGuidGen\BlazorGuidGenerator\Properties\PublishProfiles\guid.pubxml</NameOfLastUsedPublishProfile>
     <RazorPage_SelectedScaffolderID>RazorPageScaffolder</RazorPage_SelectedScaffolderID>
     <RazorPage_SelectedScaffolderCategoryPath>root/Common/RazorPage</RazorPage_SelectedScaffolderCategoryPath>
   </PropertyGroup>

@@ -1,6 +1,5 @@
 # BlazorGuidGenerator
 ### A browser-based GUID generator running on Blazor Wasm.
-[![pipeline status](https://gitlab.com/Akolman/blazorGUIDgen/badges/master/pipeline.svg)](https://gitlab.com/Akolman/blazorGUIDgen/-/commits/master)
 
 ## Why?
 Sometimes I need a batch of GUIDs and JavaScript doesn't really have great support for GUIDs.  The easiest thing to do was to make a Blazor wasm app.  Besides the slightly slow load times, there's no server-side actions so the generation is quick.  And you can generate a million at one time and it won't hurt the server one bit.
