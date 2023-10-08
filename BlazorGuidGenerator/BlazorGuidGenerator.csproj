@@ -26,7 +26,6 @@
 
 
 	<ItemGroup>
-    <PackageReference Include="BlazorWasmAntivirusProtection" Version="2.4.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0-rc.1.23421.29" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0-rc.1.23421.29" PrivateAssets="all" />
     <PackageReference Include="Seqeasy.StringPattern" Version="0.0.1.4" />
