@@ -11,9 +11,9 @@
     <Description>Client-side (wasm) batch GUID generator</Description>
     <PackageProjectUrl>https://guid.akolman.info</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.com/Akolman/blazorGUIDgen</RepositoryUrl>
-    <AssemblyVersion>1.5.1.603</AssemblyVersion>
-    <FileVersion>1.5.1.603</FileVersion>
-    <Version>1.5.1</Version>
+    <AssemblyVersion>1.5.2.605</AssemblyVersion>
+    <FileVersion>1.5.2.605</FileVersion>
+    <Version>1.5.2</Version>
   </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
