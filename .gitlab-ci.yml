@@ -1,4 +1,4 @@
-image: mcr.microsoft.com/dotnet/nightly/sdk:8.0-preview
+image: mcr.microsoft.com/dotnet/sdk:10.0
 
 build:
     stage: build
