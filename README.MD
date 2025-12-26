@@ -16,6 +16,9 @@ It's really nothing special, but it is at least easy to use and quick
 
 ## Updates
 
+### 1.5.3
+- Updated to target NET 10
+
 ### 1.5.2
 - Removed BlazorWasmAntivirusProtection as it shouldn't be used with net 8.
 
